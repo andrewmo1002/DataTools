@@ -81,7 +81,8 @@ def visual_distribution(df, mean_values, std_values):
 
         for j in range(1, 4):  # Plotting 1, 2, and 3 std ranges
             y_values = np.linspace(0, max(n), 100)  # Adjust the number of points as needed
-            std_range = mean_values[data_col] + j * std_values[data_col], mean_values[data_col] - j * std_values[data_col]
+            std_range = (mean_values[data_col] + j * std_values[data_col],
+                         mean_values[data_col] - j * std_values[data_col])
             ax.fill_betweenx(
                 y_values, std_range[0], std_range[1],
                 alpha=0.3,
@@ -94,3 +95,4 @@ def visual_distribution(df, mean_values, std_values):
 
     plt.tight_layout()
     plt.show()
+    

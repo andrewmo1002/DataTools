@@ -9,17 +9,15 @@ import matplotlib.pyplot as plt
 import data_process_tools as dpt
 import data_analysis_tools as dat
 
+PROPERTY_SCHEMA = ["dtypes", "mean", "std_values"]
 
-PROPERTY_SCHMEA = ["dtypes", "mean", "std_values"]
 
-
-class DataAnalysis():
-    def __init__(self, feature_data: pd.DataFrame = None, target_col = None) -> None:
+class DataAnalysis:
+    def __init__(self, feature_data: pd.DataFrame = None, target_col=None) -> None:
         self.feature = feature_data
-        self.property = dict(zip(PROPERTY_SCHMEA, [None for _ in PROPERTY_SCHMEA]))
+        self.property = dict(zip(PROPERTY_SCHEMA, [None for _ in PROPERTY_SCHEMA]))
         self.report_msg("initializing")
         self.run()
-
 
     def run(self):
         self.data_cleaning()
@@ -29,15 +27,13 @@ class DataAnalysis():
 
         self.report_msg("running ends")
 
-
     def data_cleaning(self, method="drop"):
         self.report_msg("data cleaning starts")
 
         dpt.data_cleaning(self.feature, method)
-        
+
         self.report_msg("data cleaning ends")
         # return df
-
 
     def data_filtering(self):
         # TODO: finish custom filtering here
@@ -45,12 +41,10 @@ class DataAnalysis():
         # self.feature
         pass
 
-    
     def property_analysis(self):
         # categorize column by datatypes
         self.property["dtypes"] = dpt.categorize_columns(self.feature)
         self.report_msg("property analysis ends")
-
 
     def statistics_analysis(self):
         self.report_msg("statistics analysis starts")
@@ -60,17 +54,16 @@ class DataAnalysis():
         self.property["mean"] = mean_values
         self.property["std_values"] = std_values
         # 2. ...
-    
 
-    def visual_distribution(self):
+    def visual_distribution(self, filter_view=True):
         if len(self.property["dtypes"]['numeric']) > 0:
             dat.visual_distribution(
                 df=self.feature,
                 mean_values=self.property["mean"],
-                std_values=self.property["std_values"]
+                std_values=self.property["std_values"],
+                filter_view=filter_view
             )
 
-    
     def report_msg(self, position):
 
         if position == "initializing":
@@ -79,7 +72,7 @@ class DataAnalysis():
 
         elif position == "running ends":
             print("Run Completed")
-            # 1. Property Reporrt
+            # 1. Property Report
             print("    Property created: ", end="")
             for key in self.property:
                 print(f"{key}, ", end="")
@@ -102,7 +95,7 @@ class DataAnalysis():
             print("    column dtypes: ", end="")
             for key in self.property["dtypes"]:
                 print(f"{key}: {len(self.property['dtypes'][key])}", end=", ")
-            print(end=2*'\n')
+            print(end=2 * '\n')
 
         elif position == "statistics analysis starts":
             print("Calculating data statistics...")

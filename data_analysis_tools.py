@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import data_process_tools as dpt
 
 
-def visual_distribution(df, mean_values, std_values):
+def visual_distribution(df, mean_values, std_values, filter_view=False):
     num_per_row = 3
     num_cols = len(mean_values)
     num_plots_per_row = min(num_cols, num_per_row)
@@ -18,20 +18,24 @@ def visual_distribution(df, mean_values, std_values):
 
         ax = axes[row, col]
 
+        mean = mean_values[data_col]
+        std = std_values[data_col]
+        std_range_ceil = 4
+
+        # Setting x-axis limits within 3 std range
+        lower_limit = mean - 3 * std
+        upper_limit = mean + 3 * std
+        
+        if filter_view:
+            ax.set_xlim(lower_limit, upper_limit)
+            std_range_ceil = 3
+
         # Plotting histogram
         n, bins, patches = ax.hist(
             df[data_col],
             bins='auto',
             alpha=0.6
         )
-
-        mean = mean_values[data_col]
-        std = std_values[data_col]
-
-        # Setting x-axis limits within 3 std range
-        lower_limit = mean - 3 * std
-        upper_limit = mean + 3 * std
-        ax.set_xlim(lower_limit, upper_limit)
 
         ax.axvline(
             mean,
@@ -41,7 +45,7 @@ def visual_distribution(df, mean_values, std_values):
             lw=3
         )
 
-        for j in range(1, 3):  # Plotting 1, 2, and 3 std ranges
+        for j in range(1, std_range_ceil):  # Plotting 1, 2, and 3 std ranges
             y_values = np.linspace(0, max(n), 100)  # Adjust the number of points as needed
             std_range = mean + j * std, mean - j * std
             std_range = (max(std_range[0], lower_limit), min(std_range[1], upper_limit))
@@ -57,4 +61,3 @@ def visual_distribution(df, mean_values, std_values):
 
     plt.tight_layout()
     plt.show()
-
